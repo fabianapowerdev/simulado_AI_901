@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-901 ExamLab | Simulados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>AI-901 ExamLab</h1>
+        <small>Microsoft Azure AI Fundamentals</small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="header-chip">
+        <span class="pulse-dot"></span>
+        <span>100 questões inéditas • Feedback detalhado</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="start" class="hero">
+      <div class="panel hero-info">
+        <span class="eyebrow">Prepare-se com confiança</span>
+        <h2>Seu laboratório de simulados AI-901.</h2>
+        <p>Pratique por tema com correção imediata ou encare uma prova cronometrada. O banco conta com 100 questões únicas divididas entre todos os domínios do exame, embaralhadas a cada tentativa sem repetição.</p>
+        
+        <div class="features">
+          <div class="feature">
+            <div class="icon-box" aria-hidden="true">💬</div>
+            <div>
+              <b>Feedback completo</b>
+              <p>Entenda a correta e por que cada uma das demais alternativas não atende.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="icon-box" aria-hidden="true">⚡</div>
+            <div>
+              <b>Prova realista</b>
+              <p>40 questões aleatórias sem repetição em 60 minutos.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="icon-box" aria-hidden="true">📊</div>
+            <div>
+              <b>Diagnóstico por habilidade</b>
+              <p>Veja seu desempenho por tópico e saiba exatamente o que revisar.</p>
+            </div>
+          </div>
+        </div>
+        <p id="last" class="history-note">Nenhuma tentativa registrada neste navegador.</p>
+      </div>
+
+      <div class="panel setup">
+        <h3>Configurar sessão</h3>
+        
+        <div class="mode-grid">
+          <button class="mode active" data-mode="practice" onclick="setMode('practice')">
+            <b>Modo estudo</b>
+            <small>Correção imediata • Sem tempo</small>
+          </button>
+          <button class="mode" data-mode="exam" onclick="setMode('exam')">
+            <b>Modo prova</b>
+            <small>40 questões • 60 min</small>
+          </button>
+        </div>
+
+        <div class="field">
+          <label for="topic">Tema de Estudo</label>
+          <select id="topic"><option value="Todos">Todos (100 questões)</option></select>
+        </div>
+
+        <div class="row" id="sessionConfigRow">
+          <div class="field">
+            <label for="questionCount">Qtd. Questões</label>
+            <select id="questionCount">
+              <option>100</option>
+              <option>100</option>
+              <option>100</option>
+              <option>100</option>
+              <option selected>40</option>
+              <option>100</option>
+              <option>100</option>
+            </select>
+          </div>
+          <div class="field" id="timeField">
+            <label for="timeLimit">Tempo (min)</label>
+            <input id="timeLimit" type="number" min="1" max="180" value="60">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="goal">Meta de acerto (%)</label>
+          <input id="goal" type="number" min="1" max="100" value="70">
+        </div>
+
+        <button class="primary" onclick="startQuiz()">Iniciar simulado →</button>
+      </div>
+    </section>
+
+    <section id="quiz" class="quiz-shell hidden">
+      <aside class="side">
+        <div class="side-header">
+          <span class="eyebrow" id="modeLabel">MODO ESTUDO</span>
+          <div id="timerBlock" class="timer-block hidden">
+            <div id="timer" class="timer">60:00</div>
+          </div>
+          <div id="studyBadge" class="study-badge">Sem limite de tempo</div>
+        </div>
+
+        <div class="stats-group">
+          <div class="stat">
+            <span>Respondidas</span>
+            <b id="answered">0/0</b>
+          </div>
+          <div class="stat">
+            <span>Marcadas</span>
+            <b id="marked">0</b>
+          </div>
+        </div>
+
+        <div class="palette-container">
+          <span class="palette-label">Mapa de Questões</span>
+          <div id="palette" class="palette"></div>
+        </div>
+
+        <div class="side-actions">
+          <button class="ghost-btn" onclick="quitQuiz()">← Voltar ao início</button>
+          <button class="danger" onclick="finish(true)">Encerrar e Enviar</button>
+        </div>
+      </aside>
+
+      <article class="question-card">
+        <div class="progress">
+          <div id="progressBar"></div>
+        </div>
+
+        <div class="question-body">
+          <div class="meta">
+            <span id="topicPill" class="pill"></span>
+            <span id="counter" class="counter"></span>
+          </div>
+
+          <h3 id="question" class="question"></h3>
+
+          <div id="options" class="options"></div>
+
+          <div id="feedback" class="feedback hidden"></div>
+
+          <div class="actions">
+            <button id="prev" class="secondary" onclick="prev()">← Anterior</button>
+            <div class="actions-right">
+              <button id="flag" class="secondary" onclick="toggleFlag()">☆ Marcar</button>
+              <button id="next" class="primary-action" onclick="next()">Próxima →</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="reviewSection" class="review hidden">
+      <div class="review-header">
+        <div>
+          <h2>Revisão Detalhada</h2>
+          <p>Análise ponto a ponto do seu simulado</p>
+        </div>
+        <button class="secondary" onclick="restart()">Novo simulado</button>
+      </div>
+      <div id="review"></div>
+    </section>
+  </main>
+
+  <div id="resultModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span class="eyebrow">RESULTADO FINAL</span>
+        <h2 id="resultTitle">Desempenho da tentativa</h2>
+        <div id="statusText"></div>
+      </div>
+
+      <div class="result-grid">
+        <div class="score-column">
+          <div id="scoreRing" class="score-ring">
+            <div class="ring-center">
+              <strong id="score">0%</strong>
+              <span id="hits">0/0 acertos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-column">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <span>Pontuação</span>
+              <b id="scaled">0/1000</b>
+            </div>
+            <div class="summary-card">
+              <span>Tempo</span>
+              <b id="elapsed">00:00</b>
+            </div>
+            <div class="summary-card">
+              <span>Meta</span>
+              <b id="goalResult">70%</b>
+            </div>
+          </div>
+
+          <h3>Desempenho por tema</h3>
+          <div id="topicScores" class="bars"></div>
+
+          <div id="recommendation" class="recommendation"></div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" onclick="closeResult()">Revisar respostas</button>
+        <button class="primary" style="width:auto;margin:0" onclick="restart()">Fazer novo simulado</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
